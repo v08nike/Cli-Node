@@ -13,6 +13,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Install packages
+        run: npm install
       - name: run npm prepack
         run: npm run prepack
 
