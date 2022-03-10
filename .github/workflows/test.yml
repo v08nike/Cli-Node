@@ -3,18 +3,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  check_prepack:
-    name: check prepack command
+  release:
+    name: Publish to NPM 
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository 
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout Repository
         uses: actions/checkout@v2
       - name: Setup Nodejs 
         uses: actions/setup-node@v1
         with:
           node-version: 14
-      - name: Install packages
+      - name: Install Dependencies 
         run: npm install
-      - name: run npm prepack
-        run: npm run prepack
+      - name: Publish to NPM 
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          GIT_AUTHOR_NAME: asyncapi-bot
+          GIT_AUTHOR_EMAIL: info@asyncapi.io
+          GIT_COMMITTER_NAME: asyncapi-bot
+          GIT_COMMITTER_EMAIL: info@asyncapi.io
+        run: npm run release
 
